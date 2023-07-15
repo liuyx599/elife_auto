@@ -61,3 +61,20 @@ def test_SMP_login_003(clearAlert):
     alert = smp_ui.wd.switch_to.alert
     assert alert.text == '请输入密码'
 
+
+
+@pytest.mark.parametrize("username, password, expected_alert", [
+    ('', '123456', '请输入用户名'),  # 空用户名
+    ('', '12345622', '请输入用户名'),  # 空用户名
+    ('admin', '', '请输入密码'),  # 空密码
+    ('byhy', '', '请输入密码'),  # 空密码
+    ('byhy', 'sdsdsd', '登录失败： 用户名或者密码错误'),  # 错误的密码
+    ('byhyy', 'sdfsdf', '登录失败： 用户名不存在'),  # 用户名不存在
+    ('byh', 'sdfsdf', '登录失败： 用户名不存在')  # 用户名不存在
+])
+def test_SMP_login_004(username, password, expected_alert, clearAlert):
+    # 输入用户名和密码登录
+    smp_ui.login(username, password)
+    time.sleep(0.5)
+    alert = smp_ui.wd.switch_to.alert
+    assert alert.text == expected_alert
